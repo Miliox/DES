@@ -19,6 +19,7 @@ import android.widget.CheckBox;
 
 import br.ufpe.ppgee.emilianofirmino.des.service.DESService;
 import br.ufpe.ppgee.emilianofirmino.des.suite.DisplayStressActivity;
+import br.ufpe.ppgee.emilianofirmino.des.suite.NetworkStressActivity;
 
 import static br.ufpe.ppgee.emilianofirmino.des.service.DESService.*;
 
@@ -133,10 +134,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.displayBrightTest:
+            case R.id.displayBrightTest: {
                 Intent intent = new Intent(this, DisplayStressActivity.class);
                 startActivity(intent);
                 return true;
+            }
+            case R.id.networkStressTest: {
+                Intent intent = new Intent(this, NetworkStressActivity.class);
+                startActivity(intent);
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="data_unit_array">
+        <item>B</item>
+        <item>KB</item>
+        <item>MB</item>
+    </string-array>
+</resources>

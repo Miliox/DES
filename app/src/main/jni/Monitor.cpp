@@ -294,14 +294,19 @@ void* processor_monitor(void* ptr) {
 
             for (int i = 0; i < 4; i++) {
                 FILE* cpu_is_on_file = fopen(kCpuIsOnline[i], "r");
-                char c = fgetc(cpu_is_on_file);
-                fclose(cpu_is_on_file);
+                char c = 0;
+                if (cpu_is_on_file) {
+                    c = fgetc(cpu_is_on_file);
+                    fclose(cpu_is_on_file);
+                }
 
                 cpu_is_on[i] = c == '1';
                 if (cpu_is_on[i]) {
                     FILE* cpu = fopen(kCpuFreqInState[i], "r");
-                    cpu_freq[i] = readLongFromFile(kCpuFrequency[i], logline, maxlen);
-                    fclose(cpu);
+                    if (cpu) {
+                        cpu_freq[i] = readLongFromFile(kCpuFrequency[i], logline, maxlen);
+                        fclose(cpu);
+                    }
                 }
 
                 getline(&logline, &maxlen, stat);

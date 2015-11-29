@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="stress_mode_array">
+    <item>Simplex RX</item>
+    <item>Simplex TX</item>
+    <item>Half-Duplex</item>
+    <item>Full-Duplex</item>
+</string-array>
+</resources>

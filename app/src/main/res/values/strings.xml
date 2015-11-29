@@ -3,4 +3,19 @@
     <string name="button_start_profiler">Start Profiler</string>
     <string name="button_stop_profiler">Stop Profiler</string>
     <string name="checkbox_prevent_sleep">Prevent Device Sleep</string>
+    <string name="action_settings">Menu</string>
+    <string name="title_activity_net_stress">Network Stress Test</string>
+    <string name="time_separator">:</string>
+    <string name="hint_insert_url">127.0.0.1</string>
+    <string name="hint_insert_intermission">1</string>
+    <string name="label_insert_url">Server</string>
+    <string name="label_select_mode">Mode</string>
+    <string name="label_test_duration">Duration</string>
+    <string name="checkbox_replay_test">replay</string>
+    <string name="label_number_test_tries">Number of tries:</string>
+    <string name="label_insert_port">Port</string>
+    <string name="label_delay_between_tests">Delay between tests (milliseconds):</string>
+    <string name="execute_test">Run</string>
+    <string name="stop_test">Stop</string>
+    <string name="label_insert_packet_size">Packet Size (bytes):</string>
 </resources>
