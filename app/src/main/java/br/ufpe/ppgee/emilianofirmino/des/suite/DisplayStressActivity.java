@@ -96,7 +96,7 @@ public class DisplayStressActivity extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                 }
-                                finish();
+                                onBackPressed();
                             }
                         }
                         if (colorIndex < colorSetup.length) {

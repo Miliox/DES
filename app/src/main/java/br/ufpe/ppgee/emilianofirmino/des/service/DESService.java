@@ -29,10 +29,13 @@ public class DESService extends IntentService {
     public DESService() {
         super("DESService");
         Log.d("DESService", "DESService Created");
-        systemEventReceiver = new SystemEventReceiver(this);
     }
 
     protected void onHandleIntent(Intent request) {
+        if (systemEventReceiver == null) {
+            systemEventReceiver = new SystemEventReceiver(this);
+        }
+
         String action = request.getAction();
         Intent response = new Intent(action);
 

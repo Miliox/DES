@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/displayBrightTest"
+        android:showAsAction="ifRoom"
+        android:title="Display Bright Test"/>
+    <item android:id="@+id/displayColorTest"
+        android:showAsAction="ifRoom"
+        android:title="Display Color Test" />
+    <item android:id="@+id/processorStressTest"
+        android:showAsAction="ifRoom"
+        android:title="Processor Stress Test" />
+    <item android:id="@+id/networkStressTest"
+        android:showAsAction="ifRoom"
+        android:title="Network Stress Test" />
+</menu>
