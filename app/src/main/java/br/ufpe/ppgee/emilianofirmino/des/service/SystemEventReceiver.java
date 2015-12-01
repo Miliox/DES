@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -90,9 +91,8 @@ public class SystemEventReceiver extends BroadcastReceiver {
             ioe.printStackTrace();
         }
 
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int state = wm.getDefaultDisplay().getState();
-        if (state == Display.STATE_ON) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (pm.isScreenOn()) {
             startBrightMonitor();
         }
 
