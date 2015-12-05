@@ -9,6 +9,6 @@ public class SystemMonitor {
     }
 
     public static native boolean isProfilerActive();
-    public static native void startProfiler();
+    public static native void startProfiler(boolean battery, boolean processor, boolean network, boolean binary);
     public static native void stopProfiler();
 }

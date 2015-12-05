@@ -66,7 +66,7 @@ public class DESService extends IntentService {
             }
 
             systemEventReceiver.startSession();
-            SystemMonitor.startProfiler();
+            SystemMonitor.startProfiler(true, true, true, true);
 
             response.putExtra(EXTRA_STATUS, STATUS_PROCESSED);
             response.putExtra(EXTRA_PREVENT_SLEEP, preventSleep);
