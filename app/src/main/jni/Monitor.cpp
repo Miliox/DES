@@ -9,6 +9,8 @@
 #include <android/log.h>
 #include <arpa/inet.h>
 
+#define htonll(x) ((((uint64_t)htonl(x)) << 32) + htonl((x) >> 32))
+
 static const char* kModuleName = "SystemMonitor";
 
 static const char* kCapacityFile =
@@ -111,12 +113,23 @@ union V {
     uint32_t u;
 };
 
-int readLongFromFile(const char* filename, char* buffer, size_t length) {
+long readLongFromFile(const char* filename, char* buffer, size_t length) {
     long value = -1;
     FILE* file = fopen(filename, "r");
 
     if (file != NULL && fgets(buffer, length, file) != NULL) {
         value = strtol(buffer, (char**) NULL, 10);
+        fclose(file);
+    }
+    return value;
+}
+
+long long readLongLongFromFile(const char* filename, char* buffer, size_t length) {
+    long long value = -1;
+    FILE* file = fopen(filename, "r");
+
+    if (file != NULL && fgets(buffer, length, file) != NULL) {
+        value = strtoll(buffer, (char**) NULL, 10);
         fclose(file);
     }
     return value;
@@ -226,25 +239,25 @@ void* network_monitor(void* ptr) {
         for (;;) {
             gettimeofday(&now, NULL);
 
-            long mrx_bytes = readLongFromFile(kMobileStatsRecvBytes, logline, maxlen);
-            long mrx_packets = readLongFromFile(kMobileStatsRecvPackets, logline, maxlen);
-            long mrx_dropped = readLongFromFile(kMobileStatsRecvDropped, logline, maxlen);
-            long mrx_errors = readLongFromFile(kMobileStatsRecvErrors, logline, maxlen);
+            long long mrx_bytes = readLongLongFromFile(kMobileStatsRecvBytes, logline, maxlen);
+            long long mrx_packets = readLongLongFromFile(kMobileStatsRecvPackets, logline, maxlen);
+            long long mrx_dropped = readLongLongFromFile(kMobileStatsRecvDropped, logline, maxlen);
+            long long mrx_errors = readLongLongFromFile(kMobileStatsRecvErrors, logline, maxlen);
 
-            long mtx_bytes = readLongFromFile(kMobileStatsSentBytes, logline, maxlen);
-            long mtx_packets = readLongFromFile(kMobileStatsSentPackets, logline, maxlen);
-            long mtx_dropped = readLongFromFile(kMobileStatsSentDropped, logline, maxlen);
-            long mtx_errors = readLongFromFile(kMobileStatsSentErrors, logline, maxlen);
+            long long mtx_bytes = readLongLongFromFile(kMobileStatsSentBytes, logline, maxlen);
+            long long mtx_packets = readLongLongFromFile(kMobileStatsSentPackets, logline, maxlen);
+            long long mtx_dropped = readLongLongFromFile(kMobileStatsSentDropped, logline, maxlen);
+            long long mtx_errors = readLongLongFromFile(kMobileStatsSentErrors, logline, maxlen);
 
-            long wrx_bytes = readLongFromFile(kWlanStatsRecvBytes, logline, maxlen);
-            long wrx_packets = readLongFromFile(kWlanStatsRecvPackets, logline, maxlen);
-            long wrx_dropped = readLongFromFile(kWlanStatsRecvDropped, logline, maxlen);
-            long wrx_errors = readLongFromFile(kWlanStatsRecvErrors, logline, maxlen);
+            long long wrx_bytes = readLongLongFromFile(kWlanStatsRecvBytes, logline, maxlen);
+            long long wrx_packets = readLongLongFromFile(kWlanStatsRecvPackets, logline, maxlen);
+            long long wrx_dropped = readLongLongFromFile(kWlanStatsRecvDropped, logline, maxlen);
+            long long wrx_errors = readLongLongFromFile(kWlanStatsRecvErrors, logline, maxlen);
 
-            long wtx_bytes = readLongFromFile(kWlanStatsSentBytes, logline, maxlen);
-            long wtx_packets = readLongFromFile(kWlanStatsSentPackets, logline, maxlen);
-            long wtx_dropped = readLongFromFile(kWlanStatsSentDropped, logline, maxlen);
-            long wtx_errors = readLongFromFile(kWlanStatsSentErrors, logline, maxlen);
+            long long wtx_bytes = readLongLongFromFile(kWlanStatsSentBytes, logline, maxlen);
+            long long wtx_packets = readLongLongFromFile(kWlanStatsSentPackets, logline, maxlen);
+            long long wtx_dropped = readLongLongFromFile(kWlanStatsSentDropped, logline, maxlen);
+            long long wtx_errors = readLongLongFromFile(kWlanStatsSentErrors, logline, maxlen);
 
             if (!ctx->isBinary) {
                 timersub(&now, &begin, &delta);
@@ -256,10 +269,10 @@ void* network_monitor(void* ptr) {
                 int len = snprintf(logline, maxlen,
                     "%d/%d/%d-%d:%d:%d.%06ld "
                     "%ld.%06ld "
-                    "%ld %ld %ld %ld "
-                    "%ld %ld %ld %ld "
-                    "%ld %ld %ld %ld "
-                    "%ld %ld %ld %ld\n",
+                    "%lld %lld %lld %lld "
+                    "%lld %lld %lld %lld "
+                    "%lld %lld %lld %lld "
+                    "%lld %lld %lld %lld\n",
                     datetime.tm_year, datetime.tm_mon, datetime.tm_mday,
                     datetime.tm_hour, datetime.tm_min, datetime.tm_sec,
                     now.tv_usec, delta.tv_sec, delta.tv_usec,
@@ -278,27 +291,27 @@ void* network_monitor(void* ptr) {
                 *((uint32_t*) (logline + 0))  = htonl((uint32_t) now.tv_sec);
                 *((uint32_t*) (logline + 4))  = htonl((uint32_t) now.tv_usec);
 
-                *((uint32_t*) (logline + 8))  = htonl((uint32_t) mrx_bytes);
-                *((uint32_t*) (logline + 12)) = htonl((uint32_t) mrx_packets);
-                *((uint32_t*) (logline + 16)) = htonl((uint32_t) mrx_dropped);
-                *((uint32_t*) (logline + 20)) = htonl((uint32_t) mrx_errors);
+                *((uint64_t*) (logline + 8))  = htonll((uint64_t) mrx_bytes);
+                *((uint64_t*) (logline + 16)) = htonll((uint64_t) mrx_packets);
+                *((uint64_t*) (logline + 24)) = htonll((uint64_t) mrx_dropped);
+                *((uint64_t*) (logline + 32)) = htonll((uint64_t) mrx_errors);
 
-                *((uint32_t*) (logline + 24)) = htonl((uint32_t) mtx_bytes);
-                *((uint32_t*) (logline + 28)) = htonl((uint32_t) mtx_packets);
-                *((uint32_t*) (logline + 32)) = htonl((uint32_t) mtx_dropped);
-                *((uint32_t*) (logline + 36)) = htonl((uint32_t) mtx_errors);
+                *((uint64_t*) (logline + 40)) = htonll((uint64_t) mtx_bytes);
+                *((uint64_t*) (logline + 48)) = htonll((uint64_t) mtx_packets);
+                *((uint64_t*) (logline + 56)) = htonll((uint64_t) mtx_dropped);
+                *((uint64_t*) (logline + 64)) = htonll((uint64_t) mtx_errors);
 
-                *((uint32_t*) (logline + 40)) = htonl((uint32_t) wrx_bytes);
-                *((uint32_t*) (logline + 44)) = htonl((uint32_t) wrx_packets);
-                *((uint32_t*) (logline + 48)) = htonl((uint32_t) wrx_dropped);
-                *((uint32_t*) (logline + 52)) = htonl((uint32_t) wrx_errors);
+                *((uint64_t*) (logline + 72)) = htonll((uint64_t) wrx_bytes);
+                *((uint64_t*) (logline + 80)) = htonll((uint64_t) wrx_packets);
+                *((uint64_t*) (logline + 88)) = htonll((uint64_t) wrx_dropped);
+                *((uint64_t*) (logline + 96)) = htonll((uint64_t) wrx_errors);
 
-                *((uint32_t*) (logline + 56)) = htonl((uint32_t) wtx_bytes);
-                *((uint32_t*) (logline + 60)) = htonl((uint32_t) wtx_packets);
-                *((uint32_t*) (logline + 64)) = htonl((uint32_t) wtx_dropped);
-                *((uint32_t*) (logline + 68)) = htonl((uint32_t) wtx_errors);
+                *((uint64_t*) (logline + 104)) = htonll((uint64_t) wtx_bytes);
+                *((uint64_t*) (logline + 112)) = htonll((uint64_t) wtx_packets);
+                *((uint64_t*) (logline + 120)) = htonll((uint64_t) wtx_dropped);
+                *((uint64_t*) (logline + 128)) = htonll((uint64_t) wtx_errors);
 
-                int len = 72;
+                int len = 136;
                 fwrite(logline, len, 1, logfile);
             }
 
@@ -351,11 +364,7 @@ void* processor_monitor(void* ptr) {
 
                 cpu_is_on[i] = c == '1';
                 if (cpu_is_on[i]) {
-                    FILE* cpu = fopen(kCpuFreqInState[i], "r");
-                    if (cpu) {
-                        cpu_freq[i] = readLongFromFile(kCpuFrequency[i], logline, maxlen);
-                        fclose(cpu);
-                    }
+                    cpu_freq[i] = readLongFromFile(kCpuFrequency[i], logline, maxlen);
                 }
 
                 getline(&logline, &maxlen, stat);
@@ -400,8 +409,8 @@ void* processor_monitor(void* ptr) {
                     fwrite(logline, len, 1, logfile);
                 }
             } else {
-                *((uint32_t*) (logline + 0))  = htonl((uint32_t) now.tv_sec);
-                *((uint32_t*) (logline + 4))  = htonl((uint32_t) now.tv_usec);
+                *((uint32_t*) (logline + 0)) = htonl((uint32_t) now.tv_sec);
+                *((uint32_t*) (logline + 4)) = htonl((uint32_t) now.tv_usec);
 
                 *((uint32_t*) (logline + 8))  = htonl((uint32_t) cpu_is_on[0]);
                 *((uint32_t*) (logline + 12)) = htonl((uint32_t) cpu_is_on[1]);
