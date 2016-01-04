@@ -3,9 +3,9 @@
     package="br.ufpe.ppgee.emilianofirmino.des">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -14,18 +14,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name="br.ufpe.ppgee.emilianofirmino.des.service.DESService"
-            android:exported="false"/>
+            android:name=".service.DESService"
+            android:exported="false" />
 
-        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".suite.DisplayStressActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".suite.NetworkStressActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".suite.DisplayStressActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".suite.NetworkStressActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".suite.CPUStressActivity"
+            android:label="@string/title_activity_cpustress"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
