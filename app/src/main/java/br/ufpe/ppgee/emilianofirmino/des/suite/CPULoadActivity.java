@@ -9,13 +9,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import br.ufpe.ppgee.emilianofirmino.des.R;
 
 public class CPULoadActivity extends AppCompatActivity {
 
-    String TAG = "CPULoadActivity";
+    private static final String TAG = "CPULoadActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +42,60 @@ public class CPULoadActivity extends AppCompatActivity {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                String cmd = "cd /data/local/tmp\n" + "source cpu_stress.sh\n";
-                runPrivilegedCommand(cmd);
+                int cpuCount = Runtime.getRuntime().availableProcessors();
+
+                StringBuilder command = new StringBuilder();
+                command.append("cd /data/local/tmp\n");
+                command.append("stop mpdecision\n");
+                for (int i = 1; i < cpuCount; i++) {
+                    command.append("echo 0 > /sys/devices/system/cpu/cpu" + i + "/online\n");
+                }
+
+                String scalingFrequencies = "";
+                try {
+                    FileReader fileReader = new FileReader(
+                        new File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies"));
+                    BufferedReader br = new BufferedReader(fileReader);
+                    scalingFrequencies = br.readLine().replace("\n","");
+                } catch (FileNotFoundException fnfe) {
+
+                } catch (IOException ioe) {
+
+                }
+                command.append("for freq in " + scalingFrequencies + "; do\n");
+                command.append("echo userspace > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor\n");
+                command.append("echo $freq > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
+                command.append("echo $freq > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
+                command.append("echo $freq > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed");
+                command.append("./cpuload &\n");
+                command.append("cpuload_pid=$!\n");
+
+                command.append("for load in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do\n");
+
+                command.append("./cpulimit --pid=$cpuload_pid --limit=$load &\n");
+                command.append("cpulimit_pid=$!\n");
+                command.append("sleep 20\n");
+                command.append("kill -9 $cpulimit_pid\n");
+
+                command.append("done\n");
+
+                command.append("kill -9 $cpuload_pid\n");
+                command.append("sleep 20\n");
+
+                command.append("done\n");
+
+                command.append("start mpdecision\n");
+
+                runPrivilegedCommand(command.toString());
             }
         });
         t.start();
     }
 
+
     private void runPrivilegedCommand(String cmd) {
+        Log.v(TAG, "Running Command:\n" + cmd);
+
         boolean rooted = false;
         try {
             Process p = Runtime.getRuntime().exec("su");
@@ -57,8 +109,14 @@ public class CPULoadActivity extends AppCompatActivity {
             Log.e(TAG, "Root launch an exception", e);
         }
 
-        Toast.makeText(getApplicationContext(),
-                rooted ? "SUCESS" : "FAILED", Toast.LENGTH_SHORT).show();
+        final String result = rooted ? "SUCESS" : "FAILED";
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(CPULoadActivity.this, result, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         finish();
     }
 
