@@ -19,4 +19,5 @@
     <string name="stop_test">Stop</string>
     <string name="label_insert_packet_size">Packet Size (bytes):</string>
     <string name="title_activity_cpustress">CPUStressActivity</string>
+    <string name="title_activity_cpuload">CPULoadActivity</string>
 </resources>

@@ -35,6 +35,10 @@
         <activity
             android:name=".suite.CPUStressActivity"
             android:label="@string/title_activity_cpustress"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".suite.CPULoadActivity"
+            android:label="@string/title_activity_cpuload"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

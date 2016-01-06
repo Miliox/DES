@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import br.ufpe.ppgee.emilianofirmino.des.service.DESService;
+import br.ufpe.ppgee.emilianofirmino.des.suite.CPULoadActivity;
 import br.ufpe.ppgee.emilianofirmino.des.suite.CPUStressActivity;
 import br.ufpe.ppgee.emilianofirmino.des.suite.DisplayStressActivity;
 import br.ufpe.ppgee.emilianofirmino.des.suite.NetworkStressActivity;
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
             case R.id.processorStressTest: {
-                Intent intent = new Intent(this, CPUStressActivity.class);
+                Intent intent = new Intent(this, CPULoadActivity.class);
                 startActivity(intent);
                 return true;
             }
