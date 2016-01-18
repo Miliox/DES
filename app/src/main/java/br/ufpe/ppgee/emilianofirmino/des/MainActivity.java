@@ -147,6 +147,11 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
             case R.id.processorStressTest: {
+                Intent intent = new Intent(this, CPUStressActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.processorLoadTest: {
                 Intent intent = new Intent(this, CPULoadActivity.class);
                 startActivity(intent);
                 return true;

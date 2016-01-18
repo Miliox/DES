@@ -9,6 +9,9 @@
     <item android:id="@+id/processorStressTest"
         android:showAsAction="ifRoom"
         android:title="Processor Stress Test" />
+    <item android:id="@+id/processorLoadTest"
+        android:showAsAction="ifRoom"
+        android:title="Processor Load Test" />
     <item android:id="@+id/networkStressTest"
         android:showAsAction="ifRoom"
         android:title="Network Stress Test" />
